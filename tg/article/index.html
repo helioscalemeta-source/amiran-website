@@ -218,7 +218,21 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
         </ul>
       </div>
 
-      <a href="YOUR_TG_LINK" target="_blank" class="lead-btn" style="display:block;text-decoration:none;text-align:center;">Написать в Telegram →</a>
+      <div class="form-wrap" id="formWrap" style="max-height: 600px; opacity: 1;">
+        <div class="form-inner">
+          <label>Как тебя зовут</label>
+          <input type="text" id="nameInput" placeholder="Имя">
+
+          <label>Телефон</label>
+          <input type="text" id="phoneInput" placeholder="+38 0__ ___ __ __">
+
+          <label>Telegram</label>
+          <input type="text" id="contactInput" placeholder="@username">
+
+          <button class="submit-btn" id="submitBtn" onclick="submitForm()">Отправить заявку</button>
+          <div class="success-msg" id="successMsg">Заявка принята! Напишу вам в Telegram.</div>
+        </div>
+      </div>
 
   
 </div>
@@ -229,6 +243,37 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
 </div>
 
 <script>
+// Telegram configuration
+var TG_BOT_TOKEN = '8731781241:AAEap2a5MABX-MUC1qDrK8f85NxsUTQZJ1A';
+var TG_GROUP_ID = '-5534047068';
+
+async function _sendToTelegram(name,phone,tg){
+  try{
+    var text='📝 <b>Новая заявка из статьи (TG версия)</b>\n\n';
+    text+='👤 Имя: <b>'+name.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</b>\n';
+    if(phone) text+='📞 Телефон: <b>'+phone+'</b>\n';
+    if(tg) text+='💬 Telegram: <b>'+tg+'</b>\n';
+    text+='\n📅 Время: '+new Date().toLocaleString('ru-RU');
+    await fetch('https://api.telegram.org/bot'+TG_BOT_TOKEN+'/sendMessage',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({chat_id:TG_GROUP_ID,text:text,parse_mode:'HTML'})
+    });
+  }catch(e){console.log('TG error:',e);}
+}
+
+async function submitForm(){
+  var btn=document.getElementById('submitBtn');
+  var name=document.getElementById('nameInput').value.trim();
+  var phone=document.getElementById('phoneInput').value.trim();
+  var tg=document.getElementById('contactInput').value.trim();
+  if(!name){ document.getElementById('nameInput').focus(); return; }
+  if(!phone && !tg){ document.getElementById('phoneInput').focus(); return; }
+  btn.disabled=true;
+  await _sendToTelegram(name, phone, tg);
+  document.getElementById('successMsg').classList.add('show');
+}
+
 // лайтбокс: клик по скрину открывает увеличенную версию
 (function(){
   var lb=document.getElementById('lightbox'),lbImg=document.getElementById('lbImg');

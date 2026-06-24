@@ -382,6 +382,36 @@ function hexA(v){
   return m[v]||'#ffedd5';
 }
 
+// Telegram configuration
+var TG_BOT_TOKEN = '8731781241:AAEap2a5MABX-MUC1qDrK8f85NxsUTQZJ1A';
+var TG_GROUP_ID = '-5534047068';
+
+async function _sendToTelegram(name,phone,tg){
+  try{
+    var text='📝 <b>Новая заявка из квиза (TG версия)</b>\n\n';
+    text+='👤 Имя: <b>'+name.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</b>\n';
+    if(phone) text+='📞 Телефон: <b>'+phone+'</b>\n';
+    if(tg) text+='💬 Telegram: <b>'+tg+'</b>\n';
+    text+='\n📅 Время: '+new Date().toLocaleString('ru-RU');
+    await fetch('https://api.telegram.org/bot'+TG_BOT_TOKEN+'/sendMessage',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({chat_id:TG_GROUP_ID,text:text,parse_mode:'HTML'})
+    });
+  }catch(e){console.log('TG error:',e);}
+}
+
+async function send(){
+  var name=document.getElementById('name').value.trim();
+  var phone=document.getElementById('phone').value.trim();
+  var tg=document.getElementById('tg').value.trim();
+  if(!name){ document.getElementById('name').focus(); return; }
+  if(!phone && !tg){ document.getElementById('phone').focus(); return; }
+  document.getElementById('sendBtn').disabled=true;
+  await _sendToTelegram(name, phone, tg);
+  show(11);
+}
+
 
 function save(){ try{
   localStorage.setItem('quiz_state',JSON.stringify({
