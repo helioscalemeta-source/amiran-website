@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тест для HR операторских офисов: сколько людей прошло мимо тебя</title>
+<!-- =====================================================
+  META PIXEL
+  1. Замени {{PIXEL_ID}} на ID своего пикселя (16 цифр)
+  2. Раскомментируй блок целиком
+  ===================================================== -->
+<!--
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','{{PIXEL_ID}}');
+fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id={{PIXEL_ID}}&ev=PageView&noscript=1"/></noscript>
+-->
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  color-scheme:light only;
+  --bg:#f0eeea; --card:#ffffff; --text:#1c1c1c; --muted:#6b6b6b;
+  --accent:#e8390e; --accent-hover:#c42d0a; --border:#e2e0db; --max:560px;
+  --green:#16a34a; --yellow:#d4a017; --orange:#ea580c; --red:#dc2626;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
+  line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased;min-height:100vh}
+
+#prog{position:fixed;top:0;left:0;right:0;height:4px;background:rgba(0,0,0,.06);z-index:9999}
+#prog-bar{height:100%;width:0;background:var(--accent);transition:width .35s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 0 8px rgba(232,57,14,.5)}
+
+.wrap{max-width:var(--max);margin:0 auto;padding:40px 16px 120px}
+.card{background:var(--card);border-radius:20px;padding:34px 30px;box-shadow:0 2px 24px rgba(0,0,0,.07);
+  min-height:62vh;display:flex;flex-direction:column}
+@media(max-width:520px){.card{padding:26px 20px;border-radius:16px}}
+
+.screen{display:none;animation:fade .4s ease both;flex:1;flex-direction:column}
+.screen.active{display:flex}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.bubble{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:14px 14px 14px 4px;
+  padding:10px 15px;font-size:14px;color:var(--muted);margin-bottom:20px;align-self:flex-start;font-weight:500}
+
+.counter{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+h1{font-size:clamp(22px,5.5vw,30px);font-weight:800;line-height:1.22;letter-spacing:-.4px;margin-bottom:14px}
+h2{font-size:clamp(19px,4.5vw,24px);font-weight:800;line-height:1.3;letter-spacing:-.3px;margin-bottom:14px}
+.sub{font-size:15px;color:var(--muted);line-height:1.6;margin-bottom:8px}
+.spacer{flex:1;min-height:14px}
+
+/* OPTIONS (прогрев через сценарные ответы) */
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border:1.5px solid var(--border);
+  border-radius:12px;padding:15px 16px;font-family:inherit;font-size:15px;color:var(--text);cursor:pointer;
+  transition:border-color .15s,box-shadow .15s,transform .08s;line-height:1.4}
+.opt:hover{border-color:#c9c6c0}
+.opt:active{transform:scale(.99)}
+.opt.sel{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,57,14,.12)}
+.opt .dot{font-size:17px;flex-shrink:0;line-height:1}
+
+.slider-val{text-align:center;margin:14px 0 4px}
+.slider-num{font-size:clamp(44px,12vw,64px);font-weight:900;line-height:1;letter-spacing:-2px;color:var(--text)}
+.slider-unit{font-size:14px;color:var(--muted);font-weight:600;margin-top:6px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:8px;
+  background:var(--border);outline:none;margin:22px 0 8px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:30px;height:30px;border-radius:50%;
+  background:var(--accent);cursor:pointer;box-shadow:0 2px 10px rgba(232,57,14,.45);border:4px solid #fff;transition:transform .1s}
+input[type=range]::-webkit-slider-thumb:active{transform:scale(1.12)}
+input[type=range]::-moz-range-thumb{width:30px;height:30px;border-radius:50%;background:var(--accent);cursor:pointer;
+  border:4px solid #fff;box-shadow:0 2px 10px rgba(232,57,14,.45)}
+.range-ends{display:flex;justify-content:space-between;font-size:12px;color:#bbb;font-weight:600;margin-bottom:6px}
+.hint{font-size:13px;color:var(--accent);text-align:center;background:#fff4f0;border:1px solid #f5c4b4;
+  border-radius:10px;padding:11px 14px;margin-top:16px;font-weight:600}
+
+.btn{width:100%;background:var(--accent);color:#fff;border:none;padding:17px;font-size:15px;font-weight:700;
+  font-family:inherit;border-radius:12px;cursor:pointer;letter-spacing:.5px;transition:background .18s,transform .1s,box-shadow .18s;
+  box-shadow:0 4px 16px rgba(232,57,14,.28);margin-top:20px}
+.btn:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:0 6px 22px rgba(232,57,14,.38)}
+.btn:active{transform:scale(.99)}
+.back{background:none;border:none;color:var(--muted);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;
+  padding:6px 0;margin-bottom:6px;align-self:flex-start}
+.back:hover{color:var(--text)}
+
+.proc{text-align:center;margin:auto 0}
+.proc-dot{width:54px;height:54px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;
+  margin:0 auto 22px;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.proc-line{font-size:15px;color:var(--muted);font-weight:600;min-height:22px}
+
+.zone-tag{display:inline-block;font-size:13px;font-weight:700;padding:6px 14px;border-radius:20px;margin-bottom:18px;align-self:flex-start}
+.shock{text-align:center;margin:8px 0 6px}
+.shock-num{font-size:clamp(64px,20vw,108px);font-weight:900;line-height:.95;letter-spacing:-4px}
+.shock-cap{font-size:16px;font-weight:700;margin-top:6px}
+.shock-sub{font-size:14px;color:var(--muted);margin-top:8px}
+.metrics{display:flex;gap:10px;margin:24px 0 4px}
+.metric{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px 12px;text-align:center}
+.metric-num{font-size:24px;font-weight:800;letter-spacing:-1px}
+.metric-lab{font-size:11px;color:var(--muted);font-weight:600;margin-top:3px;line-height:1.3}
+.insight{background:#fff4f0;border:1px solid #f5c4b4;border-radius:14px;padding:18px 20px;margin:22px 0 4px}
+.insight-h{font-size:14px;font-weight:800;color:var(--accent);margin-bottom:10px}
+.insight ul{list-style:none}
+.insight li{font-size:14px;padding:5px 0 5px 22px;position:relative;color:var(--text)}
+.insight li::before{content:'→';position:absolute;left:0;color:var(--accent);font-weight:700}
+
+/* PROMISE — нормальный текстовый поток (без flex, чтобы заголовок и текст не разъезжались) */
+.promise{list-style:none;margin:6px 0 4px}
+.promise li{font-size:15px;padding:12px 0;border-bottom:1px solid var(--border);line-height:1.55}
+.promise li:last-child{border-bottom:none}
+.promise li b{font-weight:700}
+.guarantee{background:var(--text);color:#fff;border-radius:14px;padding:18px 20px;margin:20px 0 4px;font-size:14px;line-height:1.6}
+.guarantee b{color:#fff}
+
+/* ОТЗЫВЫ (скрины) */
+.reviews{margin:24px 0 4px}
+.reviews-h{font-size:13px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.reviews-grid{display:flex;flex-direction:column;gap:12px}
+.reviews-grid img{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,.06)}
+
+label{display:block;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:8px}
+input[type=text]{width:100%;padding:14px 15px;font-size:15px;font-family:inherit;border:1.5px solid var(--border);
+  border-radius:10px;outline:none;background:#fff;color:var(--text);margin-bottom:8px;transition:border-color .18s,box-shadow .18s}
+input[type=text]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,57,14,.1)}
+input[type=text]::placeholder{color:#bbb}
+.scarcity{font-size:13px;color:var(--accent);font-weight:600;text-align:center;margin-top:12px}
+.success{text-align:center;margin:auto 0}
+.success-ico{font-size:52px;margin-bottom:14px}
+.hero-img{width:100%;height:auto;display:block;border-radius:14px;margin-top:18px;border:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.bonus{background:#fff4f0;border:1px solid #f5c4b4;border-radius:12px;padding:14px 16px;margin-top:18px;font-size:14px;line-height:1.55;text-align:left}
+.bonus b{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div id="prog"><div id="prog-bar"></div></div>
+
+<div class="wrap">
+  <div class="card">
+
+    <!-- 0. INTRO (хук под сегмент) -->
+    <section class="screen active" data-step="0">
+      <div class="bubble">тест для HR операторских офисов</div>
+      <h1>Узнай, сколько качественных сотрудников ты потеряла <span style="color:var(--accent)">из-за плохого таргетолога</span></h1>
+      <p class="sub">1 минута. В конце получишь свою цифру и поймёшь, где утекает поток.</p>
+      <img class="hero-img" src="hero.jpg" alt="">
+      <div class="spacer"></div>
+      <button class="btn" onclick="next()">Пройти тест</button>
+    </section>
+
+    <!-- 1. Q1 сценарий -->
+    <section class="screen" data-step="1">
+      <button class="back" onclick="prev()">← Назад</button>
+      <div class="counter">Вопрос 1 из 3</div>
+      <h2>Какой был опыт работы с таргетологами?</h2>
+      <div class="opts" data-q="q1">
+        <button class="opt" onclick="pick(this,'q1',3)"><span class="dot">🟢</span>Хороший, поток шёл стабильно</button>
+        <button class="opt" onclick="pick(this,'q1',2)"><span class="dot">🟡</span>Так себе, результат непредсказуемый</button>
+        <button class="opt" onclick="pick(this,'q1',1)"><span class="dot">🟠</span>Слил бюджет и толком ничего не дал</button>
+        <button class="opt" onclick="pick(this,'q1',0)"><span class="dot">🔴</span>Взял деньги и пропал</button>
+      </div>
+    </section>
+
+    <!-- 2. Q2 сценарий -->
+    <section class="screen" data-step="2">
+      <button class="back" onclick="prev()">← Назад</button>
+      <div class="counter">Вопрос 2 из 3</div>
+      <h2>Часто поток обрывается из-за банов и штормов фейсбука?</h2>
+      <div class="opts" data-q="q2">
+        <button class="opt" onclick="pick(this,'q2',3)"><span class="dot">🟢</span>Почти никогда, всё ровно</button>
+        <button class="opt" onclick="pick(this,'q2',2)"><span class="dot">🟡</span>Иногда, но быстро чинят</button>
+        <button class="opt" onclick="pick(this,'q2',1)"><span class="dot">🟠</span>Регулярно</button>
+        <button class="opt" onclick="pick(this,'q2',0)"><span class="dot">🔴</span>Постоянно, простои по несколько дней</button>
+      </div>
+    </section>
+
+    <!-- 3. Q3 сценарий: опыт с таргетологом (кастдев) -->
+    <section class="screen" data-step="3">
+      <button class="back" onclick="prev()">← Назад</button>
+      <div class="counter">Вопрос 3 из 3</div>
+      <h2>Какого качества были заявки?</h2>
+      <div class="opts" data-q="q3">
+        <button class="opt" onclick="pick(this,'q3',3)"><span class="dot">🟢</span>Живые, доходят до собеса и выходят</button>
+        <button class="opt" onclick="pick(this,'q3',2)"><span class="dot">🟡</span>Нормальные, но хотелось бы лучше</button>
+        <button class="opt" onclick="pick(this,'q3',1)"><span class="dot">🟠</span>Большинство не та, время впустую</button>
+        <button class="opt" onclick="pick(this,'q3',0)"><span class="dot">🔴</span>Звоню весь день, а в ответ гудки</button>
+      </div>
+    </section>
+
+    <!-- 4. SLIDER план -->
+    <section class="screen" data-step="4">
+      <button class="back" onclick="prev()">← Назад</button>
+      <div class="counter">Считаем разрыв · 1 из 3</div>
+      <h2>Сколько операторов в месяц с тебя просят?</h2>
+      <p class="sub">Та цифра, которую называют на планёрке.</p>
+      <div class="slider-val"><div class="slider-num" id="planNum">10</div><div class="slider-unit">человек в месяц</div></div>
+      <input type="range" id="plan" min="1" max="30" value="10" step="1" oninput="upd()">
+      <div class="range-ends"><span>1</span><span>30+</span></div>
+      <div class="spacer"></div>
+      <button class="btn" onclick="next()">Дальше</button>
+    </section>
+
+    <!-- 4. SLIDER факт -->
+    <section class="screen" data-step="5">
+      <button class="back" onclick="prev()">← Назад</button>
+      <div class="counter">Считаем разрыв · 2 из 3</div>
+      <h2>А сколько реально садится на трубку?</h2>
+      <p class="sub">Не заявки. Те, кто дошёл, прошёл собес и вышел работать.</p>
+      <div class="slider-val"><div class="slider-num" id="factNum">4</div><div class="slider-unit">человек в месяц</div></div>
+      <input type="range" id="fact" min="1" max="30" value="4" step="1" oninput="upd()">
+      <div class="range-ends"><span>1</span><span>30+</span></div>
+      <div class="hint" id="factHint"></div>
+      <div class="spacer"></div>
+      <button class="btn" onclick="next()">Дальше</button>
+    </section>
+
+    <!-- 5. SLIDER месяцев -->
+    <section class="screen" data-step="6">
+      <button class="back" onclick="prev()">← Назад</button>
+      <div class="counter">Считаем разрыв · 3 из 3</div>
+      <h2>Сколько месяцев нет стабильности?</h2>
+      <p class="sub">Примерно. Как давно вакансии закрываются хуже, чем хотелось бы.</p>
+      <div class="slider-val"><div class="slider-num" id="monNum">3</div><div class="slider-unit" id="monUnit">месяца</div></div>
+      <input type="range" id="mon" min="1" max="12" value="3" step="1" oninput="upd()">
+      <div class="range-ends"><span>1</span><span>12</span></div>
+      <div class="spacer"></div>
+      <button class="btn" onclick="next()">Показать мой результат</button>
+    </section>
+
+    <!-- 6. PROCESSING -->
+    <section class="screen" data-step="7">
+      <div class="proc">
+        <div class="proc-dot"></div>
+        <div class="proc-line" id="procLine">Считаю твой разрыв...</div>
+      </div>
+    </section>
+
+    <!-- 7. RESULT -->
+    <section class="screen" data-step="8">
+      <div class="zone-tag" id="zoneTag"></div>
+      <p class="sub" id="zoneText" style="margin-bottom:6px"></p>
+      <div class="shock">
+        <div class="shock-num" id="shockNum">0</div>
+        <div class="shock-cap" id="shockCap">человек прошло мимо тебя</div>
+        <div class="shock-sub" id="shockSub"></div>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-num" id="mLost">0</div><div class="metric-lab">несостоявшихся собесов</div></div>
+        <div class="metric"><div class="metric-num" id="mYear">0</div><div class="metric-lab">упустишь за год такими темпами</div></div>
+      </div>
+      <div class="insight">
+        <div class="insight-h">И вот что важно</div>
+        <ul>
+          <li>Это не про тебя как рекрутера. Ты звонишь весь день, а доходят единицы.</li>
+          <li>Дыра не в собеседованиях. Дыра в потоке: то "закончился бюджет", то тишина в кризис.</li>
+          <li>Когда всё висит на одном канале, любой сбой и людей опять нет.</li>
+          <li>Дай ровный поток и контроль бюджета, и эта цифра обнуляется за неделю.</li>
+        </ul>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn" onclick="next()">Хочу закрыть этот разрыв</button>
+    </section>
+
+    <!-- 8. PITCH -->
+    <section class="screen" data-step="9">
+      <button class="back" onclick="prev()">← Назад</button>
+      <h2>Мы работаем только с офисами.</h2>
+      <p class="sub">Под эту нишу уже собрана связка, которая стабильно даёт поток. Ты просто разгребаешь заявки и сажаешь людей.</p>
+      <ul class="promise">
+        <li><b>📈 От 10 собесов в неделю</b>, или вернём деньги</li>
+        <li><b>💸 Бюджет под контролем</b>, никаких "закончился бюджет" посреди недели</li>
+        <li><b>⚡ На связи в любой шторм</b>, фейсбук лёг - чиним сразу, а не пропадаем на два дня</li>
+        <li><b>🎯 Целевые кандидаты</b>, живые и мотивированные, а не пустые звонки</li>
+        <li><b>🤝 Работаем в долгую</b>, чтобы завтра ты была уверена в потоке так же, как сегодня</li>
+      </ul>
+      <div class="guarantee">Условие простое: <b>минимум 10 собесов в неделю или полный возврат суммы.</b> Рискуем мы, не ты.</div>
+
+      <div class="reviews">
+        <div class="reviews-h">Что говорят те, кто уже с нами</div>
+        <div class="reviews-grid">
+          <!-- Скрины отзывов. Лишние удали, нужные добавь по тому же шаблону -->
+          <img src="review1.jpg" alt="">
+          <img src="review2.jpg" alt="">
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+      <button class="btn" onclick="next()">Оставить заявку</button>
+    </section>
+
+    <!-- 9. FORM -->
+    <section class="screen" data-step="10">
+      <button class="back" onclick="prev()">← Назад</button>
+      <h2>Куда скинуть твой расчёт и первый шаг?</h2>
+      <p class="sub">Задам пару вопросов по твоей ситуации, минут на десять. Честно скажу, вытянем или нет. Если нет, так и скажу.</p>
+      <div style="height:14px"></div>
+      <label>Как тебя зовут</label>
+      <input type="text" id="name" placeholder="Имя">
+      <label>Телефон</label>
+      <input type="text" id="phone" placeholder="+38 0__ ___ __ __">
+      <label>Telegram</label>
+      <input type="text" id="tg" placeholder="@username">
+      <button class="btn" id="sendBtn" onclick="send()">Получить мой разбор</button>
+      <div class="scarcity">Берём не больше 5 человек, дальше лист ожидания</div>
+    </section>
+
+    <!-- 10. SUCCESS -->
+    <section class="screen" data-step="11">
+      <div class="success">
+        <div class="success-ico">✅</div>
+        <h2>Заявка принята</h2>
+        <p class="sub" style="margin-bottom:0">Напишу тебе с твоим расчётом и первым шагом. Если горит, так и пиши в первом сообщении, разберём вне очереди.</p>
+        <div class="bonus">🎁 <b>Бонус всем, кто оставил заявку:</b> бесплатно разберу твою воронку найма и покажу, на каком шаге утекают люди. Даже если не будем работать.</div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+var TOTAL = 11;
+var step = 0;
+var SOBES_PER_HIRE = 3;
+var answers = {q1:null,q2:null,q3:null};
+
+function show(s){
+  document.querySelectorAll('.screen').forEach(function(el){el.classList.remove('active');});
+  document.querySelector('.screen[data-step="'+s+'"]').classList.add('active');
+  document.getElementById('prog-bar').style.width = Math.min(100,(s/TOTAL)*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+  step = s; save();
+}
+function next(){
+  if(step===6){ show(7); runProcessing(); return; }
+  if(step===7){ return; }
+  show(step+1);
+}
+function prev(){ if(step===8){show(6);return;} if(step>0)show(step-1); }
+
+function pick(el,q,val){
+  var box=el.parentNode;
+  box.querySelectorAll('.opt').forEach(function(o){o.classList.remove('sel');});
+  el.classList.add('sel');
+  answers[q]=val; save();
+  setTimeout(function(){ next(); },260);
+}
+
+function clamp(){
+  var plan=+document.getElementById('plan').value;
+  var fact=document.getElementById('fact');
+  if(+fact.value>plan){ fact.value=plan; }
+}
+function upd(){
+  clamp();
+  var plan=+document.getElementById('plan').value;
+  var fact=+document.getElementById('fact').value;
+  var mon=+document.getElementById('mon').value;
+  document.getElementById('planNum').textContent = plan>=30 ? '30+' : plan;
+  document.getElementById('factNum').textContent = fact>=30 ? '30+' : fact;
+  document.getElementById('monNum').textContent=mon;
+  document.getElementById('monUnit').textContent=plural(mon,'месяц','месяца','месяцев');
+  var gap=Math.max(0,plan-fact);
+  var h=document.getElementById('factHint');
+  if(gap<=0){ h.textContent='Закрываешь план полностью, респект'; }
+  else{ h.textContent='Разрыв: '+gap+' '+plural(gap,'человек','человека','человек')+' в месяц мимо тебя'; }
+  save();
+}
+function plural(n,a,b,c){ n=Math.abs(n)%100; var n1=n%10;
+  if(n>10&&n<20)return c; if(n1>1&&n1<5)return b; if(n1===1)return a; return c; }
+
+var procLines=['Считаю твой разрыв...','Перевожу в собеседования...','Проецирую на год...','Готово'];
+function runProcessing(){
+  var i=0,el=document.getElementById('procLine');
+  el.textContent=procLines[0];
+  var iv=setInterval(function(){
+    i++;
+    if(i<procLines.length){ el.textContent=procLines[i]; }
+    else{ clearInterval(iv); calcResult(); show(8); }
+  },520);
+}
+
+function calcResult(){
+  var plan=+document.getElementById('plan').value;
+  var fact=+document.getElementById('fact').value;
+  var mon=+document.getElementById('mon').value;
+  var gap=Math.max(0,plan-fact);
+  var lostPeople=gap*mon;
+  var lostSobes=Math.round(lostPeople*SOBES_PER_HIRE);
+  var perYear=gap*12;
+  var fillRate=plan>0?(fact/plan):1;
+
+  document.getElementById('shockNum').textContent=lostPeople;
+  document.getElementById('shockCap').textContent=plural(lostPeople,'человек прошёл мимо тебя','человека прошло мимо тебя','человек прошло мимо тебя');
+  document.getElementById('shockSub').textContent='за '+mon+' '+plural(mon,'месяц','месяца','месяцев')+' недобора, при разрыве '+gap+' в месяц';
+  document.getElementById('mLost').textContent=lostSobes;
+  document.getElementById('mYear').textContent=perYear;
+
+  var tag=document.getElementById('zoneTag'), txt=document.getElementById('zoneText');
+  var z;
+  if(gap<=0){ z={c:'var(--green)',t:'🟢 План закрываешь',d:'Поток держишь сама. Если хочешь запас и спокойные планёрки, поток лишним не будет.'}; }
+  else if(fillRate>=0.6){ z={c:'var(--yellow)',t:'🟡 Просадка заметна',d:'Недобор уже виден на цифрах. Лучшее время закрыть разрыв, пока он не накопился.'}; }
+  else if(fillRate>=0.3){ z={c:'var(--orange)',t:'🟠 Серьёзный недобор',d:'Каждый месяц мимо проходит больше людей, чем садится. В одиночку такой план не вытянуть.'}; }
+  else{ z={c:'var(--red)',t:'🔴 Кадровая яма',d:'Офис почти стоит по найму. И это вопрос не к тебе, а к потоку заявок сверху.'}; }
+  tag.textContent=z.t; tag.style.background=hexA(z.c); tag.style.color=z.c;
+  txt.textContent=z.d;
+  document.getElementById('shockNum').style.color = gap<=0?'var(--green)':z.c;
+}
+function hexA(v){
+  var m={'var(--green)':'#dcfce7','var(--yellow)':'#fef9c3','var(--orange)':'#ffedd5','var(--red)':'#fee2e2'};
+  return m[v]||'#ffedd5';
+}
+
+// =====================================================
+//  CAPI — Conversions API (прямой вызов из браузера)
+//
+//  PIXEL_ID     — ID пикселя/датасета (тот же, что в fbq init)
+//  ACCESS_TOKEN — Events Manager → Conversions API → Generate Access Token
+//
+//  ! Токен виден в исходнике. Для продакшна лучше проксировать
+//    через серверный эндпоинт (Cloudflare Worker / любой бэкенд).
+// =====================================================
+var CAPI_PIXEL = '{{PIXEL_ID}}';
+var CAPI_TOKEN = '{{ACCESS_TOKEN}}';
+
+function _getCookie(n){
+  var m=document.cookie.match('(^|;)\\s*'+n+'\\s*=\\s*([^;]+)');
+  return m?m.pop():null;
+}
+async function _sha256(str){
+  if(!str)return null;
+  var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str.toLowerCase().trim()));
+  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+}
+async function _sendLead(name,phone){
+  var evId='lead_'+Date.now()+'_'+Math.random().toString(36).substr(2,9);
+
+  // Браузерный пиксель — eventID нужен для дедупликации с CAPI
+  if(window.fbq)fbq('track','Lead',{},{eventID:evId});
+
+  // Хешируем PII перед отправкой
+  var ud={client_user_agent:navigator.userAgent};
+  var fbp=_getCookie('_fbp'); if(fbp)ud.fbp=fbp;
+  var fbc=_getCookie('_fbc'); if(fbc)ud.fbc=fbc;
+  if(phone){ud.ph=[await _sha256(phone.replace(/\D/g,''))];}
+  if(name){
+    var parts=name.trim().split(/\s+/);
+    ud.fn=[await _sha256(parts[0])];
+    if(parts[1])ud.ln=[await _sha256(parts[1])];
+  }
+
+  try{
+    await fetch(
+      'https://graph.facebook.com/v19.0/'+CAPI_PIXEL+'/events?access_token='+CAPI_TOKEN,
+      {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({data:[{
+          event_name:'Lead',
+          event_time:Math.floor(Date.now()/1000),
+          event_id:evId,
+          action_source:'website',
+          event_source_url:window.location.href,
+          user_data:ud
+        }]})
+      }
+    );
+  }catch(e){}
+}
+
+async function send(){
+  var name=document.getElementById('name').value.trim();
+  var phone=document.getElementById('phone').value.trim();
+  var tg=document.getElementById('tg').value.trim();
+  if(!name){ document.getElementById('name').focus(); return; }
+  if(!phone && !tg){ document.getElementById('phone').focus(); return; }
+  document.getElementById('sendBtn').disabled=true;
+  await _sendLead(name, phone);
+  show(11);
+}
+
+function save(){ try{
+  localStorage.setItem('quiz_state',JSON.stringify({
+    step:step, answers:answers,
+    plan:document.getElementById('plan').value,
+    fact:document.getElementById('fact').value,
+    mon:document.getElementById('mon').value
+  }));
+}catch(e){} }
+function restore(){ try{
+  var s=JSON.parse(localStorage.getItem('quiz_state')||'null');
+  if(!s)return;
+  if(s.answers)answers=s.answers;
+  document.getElementById('plan').value=s.plan;
+  document.getElementById('fact').value=s.fact;
+  document.getElementById('mon').value=s.mon;
+  upd();
+  if(s.step>0 && s.step<11){ if(s.step===7||s.step===8){show(6);} else {show(s.step);} }
+}catch(e){} }
+
+upd();
+restore();
+</script>
+</body>
+</html>

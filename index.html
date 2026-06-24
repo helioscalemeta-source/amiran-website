@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amiran - HR Recruitment Solutions</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f0eeea 0%, #faf8f5 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 60px 40px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: 800;
+      color: #1c1c1c;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: #6b6b6b;
+      margin-bottom: 48px;
+      line-height: 1.6;
+    }
+
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .link-btn {
+      display: inline-block;
+      padding: 20px 32px;
+      background: #e8390e;
+      color: white;
+      text-decoration: none;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 16px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 16px rgba(232, 57, 14, 0.25);
+      border: none;
+      cursor: pointer;
+    }
+
+    .link-btn:hover {
+      background: #c42d0a;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(232, 57, 14, 0.35);
+    }
+
+    .link-btn:active {
+      transform: scale(0.98);
+    }
+
+    .link-btn.secondary {
+      background: #f5f5f5;
+      color: #1c1c1c;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .link-btn.secondary:hover {
+      background: #e8e8e8;
+    }
+
+    .description {
+      font-size: 14px;
+      color: #6b6b6b;
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    .footer {
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid #e2e0db;
+      font-size: 13px;
+      color: #999;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 40px 24px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .subtitle {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Amiran</h1>
+      <p class="subtitle">HR рекрутинг для операторских офисов</p>
+
+      <div class="links">
+        <a href="/article/" class="link-btn">
+          📖 Читать статью
+          <div class="description">Как получать 10+ собесов в неделю даже на мёртвом рынке</div>
+        </a>
+        <a href="/calc/" class="link-btn secondary">
+          📊 Пройти тест
+          <div class="description">Узнай, сколько людей потеряла из-за плохого таргетолога</div>
+        </a>
+      </div>
+
+      <div class="footer">
+        © 2024 Amiran. Все права защищены.
+      </div>
+    </div>
+  </div>
+</body>
+</html>
