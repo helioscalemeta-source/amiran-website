@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Как HR офисов получать от 10 собесов в неделю даже на мёртвом рынке</title>
+
+<!-- META PIXEL (опционально): вставь свой ID вместо {{PIXEL_ID}}
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','{{PIXEL_ID}}');fbq('track','PageView');
+</script>
+-->
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  color-scheme:light only;
+  --bg:#f0eeea; --card:#ffffff; --text:#1c1c1c; --muted:#6b6b6b;
+  --accent:#e8390e; --accent-hover:#c42d0a; --border:#e2e0db; --max:640px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
+  line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+
+#scroll-track{position:fixed;top:0;left:0;right:0;height:4px;background:rgba(0,0,0,.08);
+  z-index:9999;opacity:0;transition:opacity .4s;pointer-events:none}
+#scroll-track.visible{opacity:1}
+#scroll-thumb{position:absolute;top:0;left:0;height:4px;width:0;background:var(--accent);
+  border-radius:0 0 4px 4px;box-shadow:0 0 8px rgba(232,57,14,.6);transition:width .18s ease-out}
+
+.wrap{max-width:var(--max);margin:0 auto;padding:40px 16px 80px}
+.card{background:var(--card);border-radius:20px;padding:40px 36px;box-shadow:0 2px 24px rgba(0,0,0,.07)}
+@media(max-width:520px){.card{padding:28px 20px;border-radius:16px}#scroll-track{right:6px}}
+
+.hero{margin-bottom:32px}
+.hero h1{font-size:clamp(22px,5vw,30px);font-weight:800;line-height:1.25;margin-bottom:14px;letter-spacing:-.3px}
+.hero p{font-size:16px;color:var(--muted);font-style:italic;line-height:1.6}
+
+.divider{border:none;border-top:1px solid var(--border);margin:28px 0}
+
+.body-text p{margin-bottom:16px;color:var(--text);line-height:1.75}
+.body-text strong{font-weight:700}
+.body-text h2{font-size:clamp(18px,4vw,22px);font-weight:800;margin:32px 0 12px;line-height:1.3;letter-spacing:-.2px}
+.body-text ul{margin:10px 0 16px 0;padding-left:0;list-style:none}
+.body-text ul li{padding:6px 0 6px 22px;position:relative;border-bottom:1px solid var(--border)}
+.body-text ul li:last-child{border-bottom:none}
+.body-text ul li::before{content:'-';position:absolute;left:0;color:var(--accent);font-weight:700}
+
+.formula{background:var(--text);color:#fff;padding:20px 24px;border-radius:14px;margin:24px 0;
+  text-align:center;font-weight:700;font-size:15px;line-height:1.9;letter-spacing:-.1px}
+
+.shot-ph{border:2px dashed var(--border);border-radius:12px;padding:26px 20px;text-align:center;
+  color:var(--muted);font-size:14px;font-weight:600;margin:20px 0;background:rgba(0,0,0,.015);letter-spacing:.2px}
+
+.shots{margin:20px 0;display:flex;flex-direction:column;gap:12px}
+.shots img{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,.06)}
+
+.shot{position:relative;cursor:zoom-in}
+.shot .zoom-ico{position:absolute;right:10px;bottom:10px;width:34px;height:34px;border-radius:50%;
+  background:rgba(0,0,0,.62);display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(2px);transition:background .18s,transform .18s;pointer-events:none}
+.shot:hover .zoom-ico{background:var(--accent);transform:scale(1.08)}
+.shot .zoom-ico svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round}
+
+.lightbox{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.9);display:none;
+  align-items:center;justify-content:center;padding:24px;cursor:zoom-out;opacity:0;transition:opacity .25s}
+.lightbox.open{display:flex;opacity:1}
+.lightbox img{max-width:100%;max-height:100%;border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+.lightbox .lb-close{position:absolute;top:18px;right:20px;width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,.12);color:#fff;border:none;font-size:24px;line-height:1;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:background .18s}
+.lightbox .lb-close:hover{background:rgba(255,255,255,.25)}
+
+.cta-section{margin-top:36px}
+.cta-section h2{font-size:clamp(20px,4vw,24px);font-weight:800;margin-bottom:12px;letter-spacing:-.2px}
+.cta-section>p{margin-bottom:24px;line-height:1.7}
+
+.lead-btn{width:100%;background:var(--accent);color:#fff;border:none;padding:18px 32px;font-size:15px;
+  font-weight:700;font-family:'Inter',sans-serif;border-radius:12px;cursor:pointer;letter-spacing:.8px;
+  text-transform:uppercase;transition:background .18s,transform .1s,box-shadow .18s;box-shadow:0 4px 16px rgba(232,57,14,.25)}
+.lead-btn:hover{background:var(--accent-hover);box-shadow:0 6px 20px rgba(232,57,14,.35);transform:translateY(-1px)}
+.lead-btn:active{transform:scale(.99)}
+
+.form-wrap{max-height:0;overflow:hidden;transition:max-height .42s cubic-bezier(.4,0,.2,1),opacity .3s;opacity:0}
+.form-wrap.open{max-height:600px;opacity:1}
+.form-inner{background:var(--bg);border-radius:12px;padding:24px 20px 20px;margin-top:10px;border:1px solid var(--border)}
+.form-inner label{display:block;font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:8px}
+.form-inner input,.form-inner select{width:100%;padding:13px 15px;font-size:15px;font-family:'Inter',sans-serif;
+  border:1.5px solid var(--border);border-radius:9px;outline:none;background:#fff;color:var(--text);margin-bottom:12px;transition:border-color .18s,box-shadow .18s}
+.form-inner input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,57,14,.1)}
+.form-inner input::placeholder{color:#bbb}
+
+.submit-btn{width:100%;background:var(--text);color:#fff;border:none;padding:14px;font-size:14px;font-weight:700;
+  letter-spacing:.5px;font-family:'Inter',sans-serif;border-radius:9px;cursor:pointer;text-transform:uppercase;transition:background .18s,transform .1s}
+.submit-btn:hover{background:#333}.submit-btn:active{transform:scale(.99)}.submit-btn:disabled{opacity:.5;cursor:not-allowed}
+
+.success-msg{display:none;background:#f0faf4;border:1.5px solid #86efac;color:#166534;padding:14px 18px;border-radius:10px;
+  font-weight:600;font-size:14px;margin-top:10px;text-align:center}
+.success-msg.show{display:block}
+
+.ps-note{margin-top:36px;padding-top:20px;border-top:1px solid var(--border)}
+.ps-note p{color:var(--muted);font-size:15px;line-height:1.7}
+.ps-note strong{color:var(--text);font-weight:700}
+
+.footer-note{margin-top:40px;font-size:12px;color:#bbb;text-align:center}
+</style>
+</head>
+<body>
+
+<div id="scroll-track"><div id="scroll-thumb"></div></div>
+
+<div class="wrap">
+  <div class="card">
+
+    <!-- HERO -->
+    <div class="hero">
+      <h1>Как HR офисов получать от 10 собесов в неделю даже на мёртвом рынке</h1>
+      <p>Или почему у одних поток заявок не кончается, а другие на каждой планёрке отводят глаза, когда спрашивают: "Ну и где люди?"</p>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ОСНОВНОЙ ТЕКСТ -->
+    <div class="body-text">
+
+      <p>Если у тебя с операторами всё в порядке - поток идёт, планёрки спокойные - <strong>дальше можно не читать.</strong></p>
+
+      <p>Этот текст для тех, у кого иначе. Если бюджет на рекламу уходит, а сажать на трубку некого. И вопросы за пустые места прилетают тебе - <strong>прочитай внимательно.</strong></p>
+
+      <h2>История одной рекрутерши</h2>
+
+      <p>Запустил рекламу - и в личку пишет HR из офиса.</p>
+
+      <p>До меня у неё было два баера.</p>
+
+      <p>Первый открутил весь бюджет за неделю и пропал. Второй гнал заявки, по которым она звонила весь день, а в ответ - гудки и "я подумаю".</p>
+
+      <p>Деньги ушли, на работу никто не вышел. <strong>А отвечать за пустой офис всё равно ей.</strong></p>
+
+      <p>Сказала прямо: не посажу никого за неделю - <strong>попрощаются.</strong></p>
+
+
+      <div class="shots">
+        <!-- Скрин переписки -->
+        <div class="shot"><img src="1.jpg" alt=""><span class="zoom-ico"><svg viewBox="0 0 24 24" stroke-linejoin="round"><polyline points="9 3 3 3 3 9"/><polyline points="15 3 21 3 21 9"/><polyline points="21 15 21 21 15 21"/><polyline points="3 15 3 21 9 21"/></svg></span></div>
+      </div>
+
+      <h2>Наконец-то интересный проект :)</h2>
+
+      <p>Я работаю только с офисами. Под эту нишу уже собрана связка, которая стабильно даёт поток.</p>
+
+      <p>Так что задача хоть и горящая, но для <strong>меня понятная.</strong></p>
+
+      <p>Созвонились. Она сомневалась - и понятно почему, ситуация на грани.</p>
+
+      <p>Поэтому я сразу дал гарантию: <strong>или нужное количество собесов, или возвращаю деньги.</strong></p>
+
+      <p>Я заранее знал, что для нас это не проблема.</p>
+
+      <p>Сказал ей: <strong>выдыхай, дальше моя забота.</strong></p>
+
+      <p>Расписал план, держал на связи каждый день, скидывал отчёты. Чтобы в любой момент было видно, сколько заявок упало, что по рекламе и куда ушёл каждый доллар.</p>
+
+      <p>А дальше цифры поползли вверх -<strong> 97 переписок и 23 собеседования за неделю.</strong></p>
+
+      <div class="shots">
+        <!-- Скрин отчёта / результата -->
+        <div class="shot"><img src="2.jpg" alt=""><span class="zoom-ico"><svg viewBox="0 0 24 24" stroke-linejoin="round"><polyline points="9 3 3 3 3 9"/><polyline points="15 3 21 3 21 9"/><polyline points="21 15 21 21 15 21"/><polyline points="3 15 3 21 9 21"/></svg></span></div>
+      </div>
+
+      <p>Через полтора месяца она перебила планку по офису и стала той самой рекрутершей, у которой спрашивают совета.</p>
+
+      <p>Рекламу мы целиком забрали на себя - теперь она про неё вообще не думает. Просто обрабатывает заявки и сажает операторов.</p>
+
+      <p>Наконец-то выдохнула.</p>
+
+      <div class="shots">
+        <!-- Скрин отзыва из переписки -->
+        <div class="shot"><img src="4.jpg" alt=""><span class="zoom-ico"><svg viewBox="0 0 24 24" stroke-linejoin="round"><polyline points="9 3 3 3 3 9"/><polyline points="15 3 21 3 21 9"/><polyline points="21 15 21 21 15 21"/><polyline points="3 15 3 21 9 21"/></svg></span></div>
+      </div>
+
+      <h2>Почему это сработало</h2>
+
+      <p>Вся моя команда льёт только на офисы.</p>
+
+      <p>Поэтому у нас гора готовых заходов и связок, и мы стартуем без долгой раскачки.</p>
+
+      <p>Сейчас добираем новых клиентов на постоянку. Условия те же: минимум 10 собесов в неделю, полная отчётность - или <strong>полный возврат суммы.</strong></p>
+
+      <div class="shots">
+        <!-- Скрин рекламного кабинета (кампании) -->
+        <div class="shot"><img src="3.jpg" alt=""><span class="zoom-ico"><svg viewBox="0 0 24 24" stroke-linejoin="round"><polyline points="9 3 3 3 3 9"/><polyline points="15 3 21 3 21 9"/><polyline points="21 15 21 21 15 21"/><polyline points="3 15 3 21 9 21"/></svg></span></div>
+      </div>
+
+
+      <h2>Ресурсов команды хватает не на всех</h2>
+
+      <p>Поэтому если откликается - не тяни. Разберём первых, остальных - в лист ожидания. <strong>Больше 5 человек сейчас не возьмём.</strong></p>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <h2>Что делать дальше</h2>
+      <p>Если дочитала досюда - значит, уже наелась историй, когда у таргетолога внезапно банится Фейсбук <strong>и непонятно, будут ли заявки завтра.</strong></p>
+      <p>Давай иначе. Напиши мне в Telegram - и дальше так:</p>
+
+      <div class="body-text">
+        <ul>
+          <li>Задам несколько вопросов про твою ситуацию. Минут на десять.</li>
+          <li>Скажу честно, сможем ли дать от 10 собесов в неделю. Если нет - так и скажу.</li>
+          <li>Если да - покажу, с чего начнём и когда увидишь первые заявки.</li>
+        </ul>
+      </div>
+
+      <a href="YOUR_TG_LINK" target="_blank" class="lead-btn" style="display:block;text-decoration:none;text-align:center;">Написать в Telegram →</a>
+
+  
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lbClose" aria-label="Закрыть">&times;</button>
+  <img src="" alt="" id="lbImg">
+</div>
+
+<script>
+// лайтбокс: клик по скрину открывает увеличенную версию
+(function(){
+  var lb=document.getElementById('lightbox'),lbImg=document.getElementById('lbImg');
+  function open(src){lbImg.src=src;lb.classList.add('open');document.body.style.overflow='hidden';}
+  function close(){lb.classList.remove('open');document.body.style.overflow='';}
+  document.querySelectorAll('.shot img').forEach(function(img){
+    img.addEventListener('click',function(){open(img.src);});
+  });
+  lb.addEventListener('click',close);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+})();
+
+// индикатор прокрутки
+(function(){
+  var track=document.getElementById('scroll-track'),thumb=document.getElementById('scroll-thumb');
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    var p=h>0?(window.scrollY/h)*100:0;
+    thumb.style.width=p+'%';
+    if(window.scrollY>200)track.classList.add('visible');else track.classList.remove('visible');
+  });
+})();
+</script>
+</body>
+</html>

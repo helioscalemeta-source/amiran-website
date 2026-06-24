@@ -280,6 +280,10 @@ function openForm(){document.getElementById('formWrap').classList.add('open');}
 var CAPI_PIXEL = '{{PIXEL_ID}}';
 var CAPI_TOKEN = '{{ACCESS_TOKEN}}';
 
+// Telegram configuration
+var TG_BOT_TOKEN = '8731781241:AAEap2a5MABX-MUC1qDrK8f85NxsUTQZJ1A';
+var TG_GROUP_ID = '-5534047068';
+
 function _getCookie(n){
   var m=document.cookie.match('(^|;)\\s*'+n+'\\s*=\\s*([^;]+)');
   return m?m.pop():null;
@@ -325,6 +329,21 @@ async function _sendLead(name,phone){
   }catch(e){}
 }
 
+async function _sendToTelegram(name,phone,tg){
+  try{
+    var text='📝 <b>Новая заявка из статьи</b>\n\n';
+    text+='👤 Имя: <b>'+name.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</b>\n';
+    if(phone) text+='📞 Телефон: <b>'+phone+'</b>\n';
+    if(tg) text+='💬 Telegram: <b>'+tg+'</b>\n';
+    text+='\n📅 Время: '+new Date().toLocaleString('ru-RU');
+    await fetch('https://api.telegram.org/bot'+TG_BOT_TOKEN+'/sendMessage',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({chat_id:TG_GROUP_ID,text:text,parse_mode:'HTML'})
+    });
+  }catch(e){console.log('TG error:',e);}
+}
+
 async function submitForm(){
   var btn=document.getElementById('submitBtn');
   var name=document.getElementById('nameInput').value.trim();
@@ -334,6 +353,7 @@ async function submitForm(){
   if(!phone && !tg){ document.getElementById('phoneInput').focus(); return; }
   btn.disabled=true;
   await _sendLead(name, phone);
+  await _sendToTelegram(name, phone, tg);
   document.getElementById('successMsg').classList.add('show');
 }
 
