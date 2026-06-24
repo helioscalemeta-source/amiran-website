@@ -29,7 +29,7 @@ src="https://www.facebook.com/tr?id={{PIXEL_ID}}&ev=PageView&noscript=1"/></nosc
 :root{
   color-scheme:light only;
   --bg:#f0eeea; --card:#ffffff; --text:#1c1c1c; --muted:#6b6b6b;
-  --accent:#e8390e; --accent-hover:#c42d0a; --border:#e2e0db; --max:560px;
+  --accent:#16a34a; --accent-hover:#15803d; --border:#e2e0db; --max:560px;
   --green:#16a34a; --yellow:#d4a017; --orange:#ea580c; --red:#dc2626;
 }
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
@@ -37,7 +37,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
 
 #prog{position:fixed;top:0;left:0;right:0;height:4px;background:rgba(0,0,0,.06);z-index:9999}
 #prog-bar{height:100%;width:0;background:var(--accent);transition:width .35s cubic-bezier(.4,0,.2,1);
-  box-shadow:0 0 8px rgba(232,57,14,.5)}
+  box-shadow:0 0 8px rgba(22,163,74,.5)}
 
 .wrap{max-width:var(--max);margin:0 auto;padding:40px 16px 120px}
 .card{background:var(--card);border-radius:20px;padding:34px 30px;box-shadow:0 2px 24px rgba(0,0,0,.07);
@@ -64,7 +64,7 @@ h2{font-size:clamp(19px,4.5vw,24px);font-weight:800;line-height:1.3;letter-spaci
   transition:border-color .15s,box-shadow .15s,transform .08s;line-height:1.4}
 .opt:hover{border-color:#c9c6c0}
 .opt:active{transform:scale(.99)}
-.opt.sel{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,57,14,.12)}
+.opt.sel{border-color:var(--accent);box-shadow:0 0 0 3px rgba(22,163,74,.12)}
 .opt .dot{font-size:17px;flex-shrink:0;line-height:1}
 
 .slider-val{text-align:center;margin:14px 0 4px}
@@ -73,18 +73,18 @@ h2{font-size:clamp(19px,4.5vw,24px);font-weight:800;line-height:1.3;letter-spaci
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:8px;
   background:var(--border);outline:none;margin:22px 0 8px}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:30px;height:30px;border-radius:50%;
-  background:var(--accent);cursor:pointer;box-shadow:0 2px 10px rgba(232,57,14,.45);border:4px solid #fff;transition:transform .1s}
+  background:var(--accent);cursor:pointer;box-shadow:0 2px 10px rgba(22,163,74,.45);border:4px solid #fff;transition:transform .1s}
 input[type=range]::-webkit-slider-thumb:active{transform:scale(1.12)}
 input[type=range]::-moz-range-thumb{width:30px;height:30px;border-radius:50%;background:var(--accent);cursor:pointer;
-  border:4px solid #fff;box-shadow:0 2px 10px rgba(232,57,14,.45)}
+  border:4px solid #fff;box-shadow:0 2px 10px rgba(22,163,74,.45)}
 .range-ends{display:flex;justify-content:space-between;font-size:12px;color:#bbb;font-weight:600;margin-bottom:6px}
 .hint{font-size:13px;color:var(--accent);text-align:center;background:#fff4f0;border:1px solid #f5c4b4;
   border-radius:10px;padding:11px 14px;margin-top:16px;font-weight:600}
 
 .btn{width:100%;background:var(--accent);color:#fff;border:none;padding:17px;font-size:15px;font-weight:700;
   font-family:inherit;border-radius:12px;cursor:pointer;letter-spacing:.5px;transition:background .18s,transform .1s,box-shadow .18s;
-  box-shadow:0 4px 16px rgba(232,57,14,.28);margin-top:20px}
-.btn:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:0 6px 22px rgba(232,57,14,.38)}
+  box-shadow:0 4px 16px rgba(22,163,74,.28);margin-top:20px}
+.btn:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:0 6px 22px rgba(22,163,74,.38)}
 .btn:active{transform:scale(.99)}
 .back{background:none;border:none;color:var(--muted);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;
   padding:6px 0;margin-bottom:6px;align-self:flex-start}
@@ -128,7 +128,7 @@ input[type=range]::-moz-range-thumb{width:30px;height:30px;border-radius:50%;bac
 label{display:block;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:8px}
 input[type=text]{width:100%;padding:14px 15px;font-size:15px;font-family:inherit;border:1.5px solid var(--border);
   border-radius:10px;outline:none;background:#fff;color:var(--text);margin-bottom:8px;transition:border-color .18s,box-shadow .18s}
-input[type=text]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,57,14,.1)}
+input[type=text]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(22,163,74,.1)}
 input[type=text]::placeholder{color:#bbb}
 .scarcity{font-size:13px;color:var(--accent);font-weight:600;text-align:center;margin-top:12px}
 .success{text-align:center;margin:auto 0}
@@ -487,7 +487,7 @@ async function send(){
   document.getElementById('sendBtn').disabled=true;
   await _sendLead(name, phone);
   await _sendToTelegram(name, phone, tg);
-  show(11);
+  document.querySelector('section[data-step="10"]').innerHTML='<div style="text-align:center;margin:auto 0"><div style="font-size:52px;margin-bottom:14px">✅</div><h2>Заявка принята</h2><p style="font-size:15px;color:#6b6b6b;margin-top:12px">Напишу тебе с твоим расчётом и первым шагом. Если горит, напиши в первом сообщении, разберём вне очереди.</p></div>';
 }
 
 function save(){ try{
