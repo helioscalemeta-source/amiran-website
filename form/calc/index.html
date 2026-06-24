@@ -486,6 +486,7 @@ async function send(){
   if(!phone && !tg){ document.getElementById('phone').focus(); return; }
   document.getElementById('sendBtn').disabled=true;
   await _sendLead(name, phone);
+  await _sendToTelegram(name, phone, tg);
   show(11);
 }
 
