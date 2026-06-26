@@ -247,7 +247,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
         </div>
       </div>
 
-      <div class="success-msg" id="successMsg">Заявка принята! Можешь сразу написать мне в Telegram.</div>
+      <div class="success-msg" id="successMsg">✅ Заявка принята! Скоро напишу тебе в Telegram.</div>
+      <p id="tgCta" style="display:none;text-align:center;color:var(--text);font-size:16px;font-weight:700;margin-top:22px;line-height:1.5">Не хочешь ждать? Напиши мне прямо сейчас — отвечу лично и разберём твою ситуацию вне очереди 👇</p>
       <a href="https://kt-rdr.com/ldpg/m7mge9wqkldk/redirect" class="lead-btn tg-btn js-tg-link" id="tgAfter" onclick="goTg();return false;" style="display:none;text-decoration:none;margin-top:12px;"><svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>Написать в Telegram</a>
 
   
@@ -338,6 +339,7 @@ async function submitForm(){
   document.getElementById('leadOpenBtn').style.display='none';
   document.getElementById('formWrap').style.display='none';
   document.getElementById('successMsg').classList.add('show');
+  document.getElementById('tgCta').style.display='block';
   document.getElementById('tgAfter').style.display='flex';
 }
 

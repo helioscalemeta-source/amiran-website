@@ -487,7 +487,7 @@ async function send(){
   if(!phone && !tg){ document.getElementById('phone').focus(); return; }
   document.getElementById('sendBtn').disabled=true;
   await _submitLead(name, phone, tg);
-  document.querySelector('section[data-step="10"]').innerHTML='<div style="text-align:center;margin:auto 0"><div style="font-size:52px;margin-bottom:14px">✅</div><h2>Заявка принята</h2><p style="font-size:15px;color:#6b6b6b;margin-top:12px">Напишу тебе с твоим расчётом и первым шагом. Если горит, напиши в первом сообщении, разберём вне очереди.</p><button class="btn tg-btn" onclick="goTg()"><svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>Написать в Telegram</button></div>';
+  document.querySelector('section[data-step="10"]').innerHTML='<div style="text-align:center;margin:auto 0"><div style="font-size:52px;margin-bottom:14px">✅</div><h2>Заявка принята</h2><p style="font-size:15px;color:#6b6b6b;margin-top:12px">Скоро напишу тебе с твоим расчётом и первым шагом.</p><p style="font-size:16px;color:#1c1c1c;font-weight:700;margin-top:22px;line-height:1.5">Не хочешь ждать? Напиши мне прямо сейчас — отвечу лично и разберём твою ситуацию вне очереди 👇</p><button class="btn tg-btn" onclick="goTg()"><svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>Написать в Telegram</button></div>';
 }
 
 function save(){ try{
