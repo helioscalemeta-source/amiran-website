@@ -426,72 +426,46 @@ function hexA(v){
 //  ! Токен виден в исходнике. Для продакшна лучше проксировать
 //    через серверный эндпоинт (Cloudflare Worker / любой бэкенд).
 // =====================================================
-var CAPI_PIXEL = '{{PIXEL_ID}}';
-var CAPI_TOKEN = '{{ACCESS_TOKEN}}';
-
-// Telegram configuration
-var TG_BOT_TOKEN = '8731781241:AAEap2a5MABX-MUC1qDrK8f85NxsUTQZJ1A';
-var TG_GROUP_ID = '-1004341409930';
+// Токены живут на сервере (/api/lead, /api/pageview), в браузере их нет.
+var LEAD_SOURCE = 'квиз (форма)';
 
 function _getCookie(n){
   var m=document.cookie.match('(^|;)\\s*'+n+'\\s*=\\s*([^;]+)');
   return m?m.pop():null;
 }
-async function _sha256(str){
-  if(!str)return null;
-  var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str.toLowerCase().trim()));
-  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
-}
-async function _sendLead(name,phone){
+
+async function _submitLead(name,phone,tg){
   var evId='lead_'+Date.now()+'_'+Math.random().toString(36).substr(2,9);
-
-  // Браузерный пиксель — eventID нужен для дедупликации с CAPI
   if(window.fbq)fbq('track','Lead',{},{eventID:evId});
-
-  // Хешируем PII перед отправкой
-  var ud={client_user_agent:navigator.userAgent};
-  var fbp=_getCookie('_fbp'); if(fbp)ud.fbp=fbp;
-  var fbc=_getCookie('_fbc'); if(fbc)ud.fbc=fbc;
-  if(phone){ud.ph=[await _sha256(phone.replace(/\D/g,''))];}
-  if(name){
-    var parts=name.trim().split(/\s+/);
-    ud.fn=[await _sha256(parts[0])];
-    if(parts[1])ud.ln=[await _sha256(parts[1])];
-  }
-
   try{
-    await fetch(
-      'https://graph.facebook.com/v19.0/'+CAPI_PIXEL+'/events?access_token='+CAPI_TOKEN,
-      {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({data:[{
-          event_name:'Lead',
-          event_time:Math.floor(Date.now()/1000),
-          event_id:evId,
-          action_source:'website',
-          event_source_url:window.location.href,
-          user_data:ud
-        }]})
-      }
-    );
+    await fetch('/api/lead',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        name:name, phone:phone, tg:tg, source:LEAD_SOURCE,
+        event_id:evId,
+        event_source_url:window.location.href,
+        fbp:_getCookie('_fbp'), fbc:_getCookie('_fbc')
+      })
+    });
   }catch(e){}
 }
 
-async function _sendToTelegram(name,phone,tg){
+// PageView через серверный CAPI
+(function(){
+  var evId='pv_'+Date.now()+'_'+Math.random().toString(36).substr(2,9);
   try{
-    var text='📝 <b>Новая заявка из квиза</b>\n\n';
-    text+='👤 Имя: <b>'+name.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</b>\n';
-    if(phone) text+='📞 Телефон: <b>'+phone+'</b>\n';
-    if(tg) text+='💬 Telegram: <b>'+tg+'</b>\n';
-    text+='\n📅 Время: '+new Date().toLocaleString('ru-RU');
-    await fetch('https://api.telegram.org/bot'+TG_BOT_TOKEN+'/sendMessage',{
+    fetch('/api/pageview',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({chat_id:TG_GROUP_ID,text:text,parse_mode:'HTML'})
+      body:JSON.stringify({
+        event_id:evId,
+        event_source_url:window.location.href,
+        fbp:_getCookie('_fbp'), fbc:_getCookie('_fbc')
+      })
     });
-  }catch(e){console.log('TG error:',e);}
-}
+  }catch(e){}
+})();
 
 async function send(){
   var name=document.getElementById('name').value.trim();
@@ -500,8 +474,7 @@ async function send(){
   if(!name){ document.getElementById('name').focus(); return; }
   if(!phone && !tg){ document.getElementById('phone').focus(); return; }
   document.getElementById('sendBtn').disabled=true;
-  await _sendLead(name, phone);
-  await _sendToTelegram(name, phone, tg);
+  await _submitLead(name, phone, tg);
   document.querySelector('section[data-step="10"]').innerHTML='<div style="text-align:center;margin:auto 0"><div style="font-size:52px;margin-bottom:14px">✅</div><h2>Заявка принята</h2><p style="font-size:15px;color:#6b6b6b;margin-top:12px">Напишу тебе с твоим расчётом и первым шагом. Если горит, напиши в первом сообщении, разберём вне очереди.</p></div>';
 }
 

@@ -243,24 +243,46 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
 </div>
 
 <script>
-// Telegram configuration
-var TG_BOT_TOKEN = '8731781241:AAEap2a5MABX-MUC1qDrK8f85NxsUTQZJ1A';
-var TG_GROUP_ID = '-1004341409930';
+// Токены живут на сервере (/api/lead, /api/pageview), в браузере их нет.
+var LEAD_SOURCE = 'статья (TG)';
 
-async function _sendToTelegram(name,phone,tg){
+function _getCookie(n){
+  var m=document.cookie.match('(^|;)\\s*'+n+'\\s*=\\s*([^;]+)');
+  return m?m.pop():null;
+}
+
+async function _submitLead(name,phone,tg){
+  var evId='lead_'+Date.now()+'_'+Math.random().toString(36).substr(2,9);
+  if(window.fbq)fbq('track','Lead',{},{eventID:evId});
   try{
-    var text='📝 <b>Новая заявка из статьи (TG версия)</b>\n\n';
-    text+='👤 Имя: <b>'+name.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</b>\n';
-    if(phone) text+='📞 Телефон: <b>'+phone+'</b>\n';
-    if(tg) text+='💬 Telegram: <b>'+tg+'</b>\n';
-    text+='\n📅 Время: '+new Date().toLocaleString('ru-RU');
-    await fetch('https://api.telegram.org/bot'+TG_BOT_TOKEN+'/sendMessage',{
+    await fetch('/api/lead',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({chat_id:TG_GROUP_ID,text:text,parse_mode:'HTML'})
+      body:JSON.stringify({
+        name:name, phone:phone, tg:tg, source:LEAD_SOURCE,
+        event_id:evId,
+        event_source_url:window.location.href,
+        fbp:_getCookie('_fbp'), fbc:_getCookie('_fbc')
+      })
     });
-  }catch(e){console.log('TG error:',e);}
+  }catch(e){}
 }
+
+// PageView через серверный CAPI
+(function(){
+  var evId='pv_'+Date.now()+'_'+Math.random().toString(36).substr(2,9);
+  try{
+    fetch('/api/pageview',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        event_id:evId,
+        event_source_url:window.location.href,
+        fbp:_getCookie('_fbp'), fbc:_getCookie('_fbc')
+      })
+    });
+  }catch(e){}
+})();
 
 async function submitForm(){
   var btn=document.getElementById('submitBtn');
@@ -270,7 +292,8 @@ async function submitForm(){
   if(!name){ document.getElementById('nameInput').focus(); return; }
   if(!phone && !tg){ document.getElementById('phoneInput').focus(); return; }
   btn.disabled=true;
-  await _sendToTelegram(name, phone, tg);
+  await _submitLead(name, phone, tg);
+  document.getElementById('formWrap').style.display='none';
   document.getElementById('successMsg').classList.add('show');
 }
 
