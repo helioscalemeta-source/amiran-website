@@ -218,21 +218,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
         </ul>
       </div>
 
-      <div class="form-wrap" id="formWrap" style="max-height: 600px; opacity: 1;">
-        <div class="form-inner">
-          <label>Как тебя зовут</label>
-          <input type="text" id="nameInput" placeholder="Имя">
-
-          <label>Телефон</label>
-          <input type="text" id="phoneInput" placeholder="+38 0__ ___ __ __">
-
-          <label>Telegram</label>
-          <input type="text" id="contactInput" placeholder="@username">
-
-          <button class="submit-btn" id="submitBtn" onclick="submitForm()">Отправить заявку</button>
-          <div class="success-msg" id="successMsg">Заявка принята! Напишу вам в Telegram.</div>
-        </div>
-      </div>
+      <a href="https://kt-rdr.com/ldpg/m7mge9wqkldk/redirect" class="lead-btn js-tg-link" onclick="goTg();return false;" style="display:block;text-decoration:none;text-align:center;">Написать в Telegram →</a>
 
   
 </div>
@@ -243,6 +229,18 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
 </div>
 
 <script>
+// Редирект в Telegram через трекер — FB-параметры берутся из URL страницы
+function _tgRedirectUrl(){
+  var keys=['ad_id','ad_name','adset_id','adset_name','campaign_id','campaign_name','pixel','placement','site_source_name','fbclid'];
+  var q=new URLSearchParams(location.search), parts=[];
+  keys.forEach(function(k){ parts.push(k+'='+encodeURIComponent(q.get(k)||'')); });
+  return 'https://kt-rdr.com/ldpg/m7mge9wqkldk/redirect?'+parts.join('&');
+}
+function goTg(){ window.location.href=_tgRedirectUrl(); }
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('.js-tg-link').forEach(function(a){ a.href=_tgRedirectUrl(); });
+});
+
 // Токены живут на сервере (/api/lead, /api/pageview), в браузере их нет.
 var LEAD_SOURCE = 'статья (TG)';
 

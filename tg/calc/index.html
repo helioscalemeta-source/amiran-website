@@ -273,7 +273,7 @@ input[type=text]::placeholder{color:#bbb}
       </div>
 
       <div class="spacer"></div>
-      <button class="btn" onclick="next()">Написать в Telegram →</button>
+      <button class="btn" onclick="goTg()">Написать в Telegram →</button>
     </section>
 
     <!-- 9. FORM -->
@@ -396,6 +396,15 @@ function hexA(v){
   var m={'var(--green)':'#dcfce7','var(--yellow)':'#fef9c3','var(--orange)':'#ffedd5','var(--red)':'#fee2e2'};
   return m[v]||'#ffedd5';
 }
+
+// Редирект в Telegram через трекер — FB-параметры берутся из URL страницы
+function _tgRedirectUrl(){
+  var keys=['ad_id','ad_name','adset_id','adset_name','campaign_id','campaign_name','pixel','placement','site_source_name','fbclid'];
+  var q=new URLSearchParams(location.search), parts=[];
+  keys.forEach(function(k){ parts.push(k+'='+encodeURIComponent(q.get(k)||'')); });
+  return 'https://kt-rdr.com/ldpg/m7mge9wqkldk/redirect?'+parts.join('&');
+}
+function goTg(){ window.location.href=_tgRedirectUrl(); }
 
 // Токены живут на сервере (/api/lead, /api/pageview), в браузере их нет.
 var LEAD_SOURCE = 'квиз (TG)';
