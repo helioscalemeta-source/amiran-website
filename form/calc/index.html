@@ -86,6 +86,9 @@ input[type=range]::-moz-range-thumb{width:30px;height:30px;border-radius:50%;bac
   box-shadow:0 4px 16px rgba(232,57,14,.28);margin-top:20px}
 .btn:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:0 6px 22px rgba(232,57,14,.38)}
 .btn:active{transform:scale(.99)}
+.tg-btn{background:#229ED9 !important;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 16px rgba(34,158,217,.3) !important}
+.tg-btn:hover{background:#1b8cc4 !important;box-shadow:0 6px 20px rgba(34,158,217,.4) !important}
+.tg-btn svg{width:22px;height:22px;flex-shrink:0;fill:#fff}
 .back{background:none;border:none;color:var(--muted);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;
   padding:6px 0;margin-bottom:6px;align-self:flex-start}
 .back:hover{color:var(--text)}
@@ -426,6 +429,15 @@ function hexA(v){
 //  ! Токен виден в исходнике. Для продакшна лучше проксировать
 //    через серверный эндпоинт (Cloudflare Worker / любой бэкенд).
 // =====================================================
+// Редирект в Telegram через трекер — FB-параметры берутся из URL страницы
+function _tgRedirectUrl(){
+  var keys=['ad_id','ad_name','adset_id','adset_name','campaign_id','campaign_name','pixel','placement','site_source_name','fbclid'];
+  var q=new URLSearchParams(location.search), parts=[];
+  keys.forEach(function(k){ parts.push(k+'='+encodeURIComponent(q.get(k)||'')); });
+  return 'https://kt-rdr.com/ldpg/m7mge9wqkldk/redirect?'+parts.join('&');
+}
+function goTg(){ window.location.href=_tgRedirectUrl(); }
+
 // Токены живут на сервере (/api/lead, /api/pageview), в браузере их нет.
 var LEAD_SOURCE = 'квиз (форма)';
 
@@ -475,7 +487,7 @@ async function send(){
   if(!phone && !tg){ document.getElementById('phone').focus(); return; }
   document.getElementById('sendBtn').disabled=true;
   await _submitLead(name, phone, tg);
-  document.querySelector('section[data-step="10"]').innerHTML='<div style="text-align:center;margin:auto 0"><div style="font-size:52px;margin-bottom:14px">✅</div><h2>Заявка принята</h2><p style="font-size:15px;color:#6b6b6b;margin-top:12px">Напишу тебе с твоим расчётом и первым шагом. Если горит, напиши в первом сообщении, разберём вне очереди.</p></div>';
+  document.querySelector('section[data-step="10"]').innerHTML='<div style="text-align:center;margin:auto 0"><div style="font-size:52px;margin-bottom:14px">✅</div><h2>Заявка принята</h2><p style="font-size:15px;color:#6b6b6b;margin-top:12px">Напишу тебе с твоим расчётом и первым шагом. Если горит, напиши в первом сообщении, разберём вне очереди.</p><button class="btn tg-btn" onclick="goTg()"><svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>Написать в Telegram</button></div>';
 }
 
 function save(){ try{
