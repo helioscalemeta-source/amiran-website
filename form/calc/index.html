@@ -478,6 +478,21 @@ async function _sendLead(name,phone){
   }catch(e){}
 }
 
+async function _sendToTelegram(name,phone,tg){
+  try{
+    var text='📝 <b>Новая заявка из квиза</b>\n\n';
+    text+='👤 Имя: <b>'+name.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</b>\n';
+    if(phone) text+='📞 Телефон: <b>'+phone+'</b>\n';
+    if(tg) text+='💬 Telegram: <b>'+tg+'</b>\n';
+    text+='\n📅 Время: '+new Date().toLocaleString('ru-RU');
+    await fetch('https://api.telegram.org/bot'+TG_BOT_TOKEN+'/sendMessage',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({chat_id:TG_GROUP_ID,text:text,parse_mode:'HTML'})
+    });
+  }catch(e){console.log('TG error:',e);}
+}
+
 async function send(){
   var name=document.getElementById('name').value.trim();
   var phone=document.getElementById('phone').value.trim();

@@ -276,21 +276,36 @@ input[type=text]::placeholder{color:#bbb}
       <button class="btn" onclick="next()">Написать в Telegram →</button>
     </section>
 
-    <!-- 9. TELEGRAM CTA -->
+    <!-- 9. FORM -->
     <section class="screen" data-step="10">
       <button class="back" onclick="prev()">← Назад</button>
-      <h2>Напиши мне — разберём вместе</h2>
-      <p class="sub">Скину твой расчёт прямо в чат. Задам пару вопросов по ситуации, минут на десять. Честно скажу, вытянем или нет. Если нет — так и скажу.</p>
-      <div class="spacer"></div>
-      <a href="YOUR_TG_LINK" target="_blank" class="btn" style="display:block;text-decoration:none;text-align:center;">Написать в Telegram →</a>
+      <h2>Куда скинуть твой расчёт и первый шаг?</h2>
+      <p class="sub">Задам пару вопросов по твоей ситуации, минут на десять. Честно скажу, вытянем или нет. Если нет, так и скажу.</p>
+      <div style="height:14px"></div>
+      <label>Как тебя зовут</label>
+      <input type="text" id="name" placeholder="Имя">
+      <label>Телефон</label>
+      <input type="text" id="phone" placeholder="+38 0__ ___ __ __">
+      <label>Telegram</label>
+      <input type="text" id="tg" placeholder="@username">
+      <button class="btn" id="sendBtn" onclick="send()">Получить мой разбор</button>
       <div class="scarcity">Берём не больше 5 человек, дальше лист ожидания</div>
+    </section>
+
+    <!-- 10. SUCCESS -->
+    <section class="screen" data-step="11">
+      <div class="success">
+        <div class="success-ico">✅</div>
+        <h2>Заявка принята</h2>
+        <p class="sub" style="margin-bottom:0">Напишу тебе с твоим расчётом и первым шагом. Если горит, так и пиши в первом сообщении, разберём вне очереди.</p>
+      </div>
     </section>
 
   </div>
 </div>
 
 <script>
-var TOTAL = 10;
+var TOTAL = 11;
 var step = 0;
 var SOBES_PER_HIRE = 3;
 var answers = {q1:null,q2:null,q3:null};
@@ -429,7 +444,7 @@ function restore(){ try{
   document.getElementById('fact').value=s.fact;
   document.getElementById('mon').value=s.mon;
   upd();
-  if(s.step>0 && s.step<10){ if(s.step===7||s.step===8){show(6);} else {show(s.step);} }
+  if(s.step>0 && s.step<11){ if(s.step===7||s.step===8){show(6);} else {show(s.step);} }
 }catch(e){} }
 
 upd();
