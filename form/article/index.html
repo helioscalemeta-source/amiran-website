@@ -226,11 +226,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
         </ul>
       </div>
 
-      <button class="lead-btn" onclick="openForm()">Оставить заявку</button>
+      <button class="lead-btn" id="leadOpenBtn" onclick="openForm()">Оставить заявку</button>
 
       <div class="form-wrap" id="formWrap">
         <div class="form-inner">
-      
+
           <label>Как тебя зовут</label>
           <input type="text" id="nameInput" placeholder="Имя">
 
@@ -241,9 +241,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
           <input type="text" id="contactInput" placeholder="@username">
 
           <button class="submit-btn" id="submitBtn" onclick="submitForm()">Отправить заявку</button>
-          <div class="success-msg" id="successMsg">Заявка принята! Напишу вам в Telegram.</div>
         </div>
       </div>
+
+      <div class="success-msg" id="successMsg">Заявка принята! Напишу вам в Telegram.</div>
 
   
 </div>
@@ -318,6 +319,7 @@ async function submitForm(){
   if(!phone && !tg){ document.getElementById('phoneInput').focus(); return; }
   btn.disabled=true;
   await _submitLead(name, phone, tg);
+  document.getElementById('leadOpenBtn').style.display='none';
   document.getElementById('formWrap').style.display='none';
   document.getElementById('successMsg').classList.add('show');
 }
