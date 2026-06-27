@@ -333,6 +333,14 @@ async function _submitLead(name,phone,tg){
   }catch(e){}
 }
 
+// _fbp/_fbc для матчинга CAPI (fbclid из URL, _fbp генерим — браузерного пикселя нет)
+(function(){
+  function _setCk(n,v){ document.cookie=n+'='+v+';path=/;max-age=7776000;SameSite=Lax'; }
+  if(!_getCookie('_fbp')) _setCk('_fbp','fb.1.'+Date.now()+'.'+Math.floor(Math.random()*1e10));
+  var fbclid=new URLSearchParams(location.search).get('fbclid');
+  if(fbclid && !_getCookie('_fbc')) _setCk('_fbc','fb.1.'+Date.now()+'.'+fbclid);
+})();
+
 // PageView через серверный CAPI
 (function(){
   var evId='pv_'+Date.now()+'_'+Math.random().toString(36).substr(2,9);

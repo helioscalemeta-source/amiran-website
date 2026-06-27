@@ -393,26 +393,51 @@ function calcResult(){
   var fact=+document.getElementById('fact').value;
   var mon=+document.getElementById('mon').value;
   var gap=Math.max(0,plan-fact);
+  var fillRate=plan>0?(fact/plan):1;
+
+  var tag=document.getElementById('zoneTag'), txt=document.getElementById('zoneText');
+  var insightH=document.querySelector('.insight .insight-h');
+  var insightUl=document.querySelector('.insight ul');
+  var metrics=document.querySelector('.metrics');
+  var resultBtn=document.querySelector('section[data-step="8"] .btn');
+
+  if(gap<=0){
+    // ВСЁ ХОРОШО → про масштабирование
+    tag.textContent='🟢 Ты держишь план';
+    tag.style.background=hexA('var(--green)'); tag.style.color='var(--green)';
+    txt.textContent='Поток у тебя есть и план закрываешь. Вопрос один — это потолок или можно ещё выше?';
+    document.getElementById('shockNum').textContent=fact;
+    document.getElementById('shockNum').style.color='var(--green)';
+    document.getElementById('shockCap').textContent=plural(fact,'человек в месяц ты уже сажаешь','человека в месяц ты уже сажаешь','человек в месяц ты уже сажаешь');
+    document.getElementById('shockSub').textContent='и это можно вывести на новый уровень';
+    metrics.style.display='none';
+    insightH.textContent='Куда расти дальше';
+    insightUl.innerHTML='<li>Ты уже держишь план — значит поток есть и система работает.</li><li>Самое время масштабироваться: добавляем источники и бюджет — и закрываешь не один офис, а несколько.</li><li>С сильным таргетологом этот результат реально удвоить, не теряя в качестве людей.</li>';
+    resultBtn.textContent='Хочу расти дальше';
+    return;
+  }
+
+  // НЕДОБОР → разрыв (со сбросом состояния на случай повторного прохода)
   var lostPeople=gap*mon;
   var lostSobes=Math.round(lostPeople*SOBES_PER_HIRE);
   var perYear=gap*12;
-  var fillRate=plan>0?(fact/plan):1;
-
   document.getElementById('shockNum').textContent=lostPeople;
   document.getElementById('shockCap').textContent=plural(lostPeople,'человек прошёл мимо тебя','человека прошло мимо тебя','человек прошло мимо тебя');
   document.getElementById('shockSub').textContent='за '+mon+' '+plural(mon,'месяц','месяца','месяцев')+' недобора, при разрыве '+gap+' в месяц';
   document.getElementById('mLost').textContent=lostSobes;
   document.getElementById('mYear').textContent=perYear;
+  metrics.style.display='';
+  insightH.textContent='И вот что важно';
+  insightUl.innerHTML='<li>Это не про тебя как рекрутера. Просто тебе попадались слабые таргетологи.</li><li>Нужно добавлять новые источники: когда всё держится только на одном источнике, один сбой — и людей вообще больше нет.</li><li>Твою ситуацию легко изменить, даже проще, чем ты думаешь.</li>';
+  resultBtn.textContent='Хочу закрыть этот разрыв';
 
-  var tag=document.getElementById('zoneTag'), txt=document.getElementById('zoneText');
   var z;
-  if(gap<=0){ z={c:'var(--green)',t:'🟢 План закрываешь',d:'Поток держишь сама. Если хочешь запас и спокойные планёрки, поток лишним не будет.'}; }
-  else if(fillRate>=0.6){ z={c:'var(--yellow)',t:'🟡 Просадка заметна',d:'Недобор уже виден на цифрах. Лучшее время закрыть разрыв, пока он не накопился.'}; }
+  if(fillRate>=0.6){ z={c:'var(--yellow)',t:'🟡 Просадка заметна',d:'Недобор уже виден на цифрах. Лучшее время закрыть разрыв, пока он не накопился.'}; }
   else if(fillRate>=0.3){ z={c:'var(--orange)',t:'🟠 Серьёзный недобор',d:'Каждый месяц мимо проходит больше людей, чем садится. В одиночку такой план не вытянуть.'}; }
   else{ z={c:'var(--red)',t:'🔴 Кадровая яма',d:'Офис почти стоит по найму. И это вопрос не к тебе, а к потоку заявок сверху.'}; }
   tag.textContent=z.t; tag.style.background=hexA(z.c); tag.style.color=z.c;
   txt.textContent=z.d;
-  document.getElementById('shockNum').style.color = gap<=0?'var(--green)':z.c;
+  document.getElementById('shockNum').style.color=z.c;
 }
 function hexA(v){
   var m={'var(--green)':'#dcfce7','var(--yellow)':'#fef9c3','var(--orange)':'#ffedd5','var(--red)':'#fee2e2'};
@@ -483,6 +508,14 @@ async function _submitLead(name,phone,tg){
     });
   }catch(e){}
 }
+
+// _fbp/_fbc для матчинга CAPI (fbclid из URL, _fbp генерим — браузерного пикселя нет)
+(function(){
+  function _setCk(n,v){ document.cookie=n+'='+v+';path=/;max-age=7776000;SameSite=Lax'; }
+  if(!_getCookie('_fbp')) _setCk('_fbp','fb.1.'+Date.now()+'.'+Math.floor(Math.random()*1e10));
+  var fbclid=new URLSearchParams(location.search).get('fbclid');
+  if(fbclid && !_getCookie('_fbc')) _setCk('_fbc','fb.1.'+Date.now()+'.'+fbclid);
+})();
 
 // PageView через серверный CAPI
 (function(){
