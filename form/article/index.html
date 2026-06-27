@@ -120,7 +120,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
 
 .footer-note{margin-top:40px;font-size:12px;color:#bbb;text-align:center}
 </style>
-<script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window, document, "clarity", "script", "xd8coaweb5");</script></head>
+<script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window, document, "clarity", "script", "xd8coaweb5");</script><!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','1378076300884910');
+window.__pvid='pv_'+Date.now()+'_'+Math.random().toString(36).substr(2,9);
+fbq('track','PageView',{},{eventID:window.__pvid});
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1378076300884910&ev=PageView&noscript=1"/></noscript>
+<!-- End Meta Pixel -->
+</head>
 <body>
 
 <div id="scroll-track"><div id="scroll-thumb"></div></div>
@@ -341,9 +350,9 @@ async function _submitLead(name,phone,tg){
   if(fbclid && !_getCookie('_fbc')) _setCk('_fbc','fb.1.'+Date.now()+'.'+fbclid);
 })();
 
-// PageView через серверный CAPI
+// PageView через серверный CAPI (тот же event_id, что и браузерный пиксель → дедуп)
 (function(){
-  var evId='pv_'+Date.now()+'_'+Math.random().toString(36).substr(2,9);
+  var evId=window.__pvid||('pv_'+Date.now()+'_'+Math.random().toString(36).substr(2,9));
   try{
     fetch('/api/pageview',{
       method:'POST',
