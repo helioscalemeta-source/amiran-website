@@ -12,7 +12,9 @@ module.exports = async (req, res) => {
 
   const FB_PIXEL_ID   = process.env.FB_PIXEL_ID;
   const FB_CAPI_TOKEN = process.env.FB_CAPI_TOKEN;
+  const debug = (req.query && req.query.debug) || body.debug;
 
+  let fbResult = null;
   if(FB_PIXEL_ID && FB_CAPI_TOKEN){
     try{
       const ud = { client_user_agent: req.headers['user-agent'] };
@@ -20,7 +22,7 @@ module.exports = async (req, res) => {
       if(ip) ud.client_ip_address = ip;
       if(fbp) ud.fbp = fbp;
       if(fbc) ud.fbc = fbc;
-      await fetch('https://graph.facebook.com/v19.0/' + FB_PIXEL_ID + '/events?access_token=' + FB_CAPI_TOKEN, {
+      const r = await fetch('https://graph.facebook.com/v19.0/' + FB_PIXEL_ID + '/events?access_token=' + FB_CAPI_TOKEN, {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ data:[{
@@ -32,8 +34,10 @@ module.exports = async (req, res) => {
           user_data: ud
         }]})
       });
-    }catch(e){}
+      if(debug) fbResult = await r.json();
+    }catch(e){ if(debug) fbResult = { error: String(e) }; }
   }
 
+  if(debug){ res.status(200).json({ ok:true, hasPixel:!!FB_PIXEL_ID, hasToken:!!FB_CAPI_TOKEN, fb:fbResult }); return; }
   res.status(200).json({ ok:true });
 };
