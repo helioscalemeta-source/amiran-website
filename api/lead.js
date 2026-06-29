@@ -26,20 +26,21 @@ module.exports = async (req, res) => {
   const FB_PIXEL_ID  = process.env.FB_PIXEL_ID;
   const FB_CAPI_TOKEN = process.env.FB_CAPI_TOKEN;
 
-  // 1) Уведомление в Telegram
+  // 1) Уведомление в Telegram (TG_GROUP_ID может содержать несколько чатов через запятую)
   if(TG_BOT_TOKEN && TG_GROUP_ID){
-    try{
-      let text = '📝 <b>Новая заявка</b>' + (source ? ' (' + source + ')' : '') + '\n\n';
-      text += '👤 Имя: <b>' + name.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</b>\n';
-      if(phone) text += '📞 Телефон: <b>' + phone + '</b>\n';
-      if(tg)    text += '💬 Telegram: <b>' + tg + '</b>\n';
-      text += '\n📅 ' + new Date().toLocaleString('ru-RU');
-      await fetch('https://api.telegram.org/bot' + TG_BOT_TOKEN + '/sendMessage', {
+    let text = '📝 <b>Новая заявка</b>' + (source ? ' (' + source + ')' : '') + '\n\n';
+    text += '👤 Имя: <b>' + name.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</b>\n';
+    if(phone) text += '📞 Телефон: <b>' + phone + '</b>\n';
+    if(tg)    text += '💬 Telegram: <b>' + tg + '</b>\n';
+    text += '\n📅 ' + new Date().toLocaleString('ru-RU');
+    const chatIds = String(TG_GROUP_ID).split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+    await Promise.all(chatIds.map(function(chatId){
+      return fetch('https://api.telegram.org/bot' + TG_BOT_TOKEN + '/sendMessage', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ chat_id: TG_GROUP_ID, text: text, parse_mode:'HTML' })
-      });
-    }catch(e){}
+        body: JSON.stringify({ chat_id: chatId, text: text, parse_mode:'HTML' })
+      }).catch(function(){});
+    }));
   }
 
   // 2) Facebook Conversions API — событие Lead
